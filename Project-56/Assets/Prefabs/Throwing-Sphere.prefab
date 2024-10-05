@@ -152,3 +152,4 @@ MonoBehaviour:
   stimulusPrefab: {fileID: 6256501389907542053, guid: 86119d1150bc44b47891825717ba05c0, type: 3}
   startingAwareness: 3
   stimulus: {fileID: 0}
+  impact: {fileID: 8300000, guid: bdbc04e96c0981f4fb7d0de1a9628c1c, type: 3}

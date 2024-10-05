@@ -10,8 +10,8 @@ public class HurtBox : MonoBehaviour
     [SerializeField] bool disableOnDamage;
     [SerializeField] string requiredTag = "";
     [SerializeField] int damage = 50;
-    [SerializeField] float rate = 0.1f;
-    float timer;
+    //[SerializeField] float rate = 0.1f;
+    //float timer;
 
     private void Awake() {
         rigid = GetComponent<Rigidbody>();
@@ -26,23 +26,23 @@ public class HurtBox : MonoBehaviour
     }
     
     void OnTriggered(Collider other) {
-        timer = rate;
+        //timer = rate;
 
         if (other.TryGetComponent<Health>(out Health health)) {
             health.ApplyDamage(new Damage(damage));
         }
 
         if (disableOnDamage) {
-            timer = 0;
+            //timer = 0;
             gameObject.SetActive(false);
         }
     }
 
-    private void OnTriggerStay(Collider other) {
-        timer -= Time.deltaTime;
+    private void OnTriggerEnter(Collider other) {
+        //timer -= Time.deltaTime;
 
-        if (timer > 0)
-            return;
+        //if (timer > 0)
+        //    return;
 
         if (requiredTag != "" && other.CompareTag(requiredTag)) {
             OnTriggered(other);

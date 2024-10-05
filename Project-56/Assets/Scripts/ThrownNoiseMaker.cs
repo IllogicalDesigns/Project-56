@@ -5,6 +5,7 @@ public class ThrownNoiseMaker : MonoBehaviour
     [SerializeField] GameObject stimulusPrefab;
     [SerializeField] float startingAwareness = 3f;
     [SerializeField] Stimulus stimulus;
+    [SerializeField] AudioClip impact;
 
     private void OnCollisionEnter(Collision collision) {
         if (stimulus != null) {
@@ -18,5 +19,7 @@ public class ThrownNoiseMaker : MonoBehaviour
                 stimulus.UpdateStim(startingAwareness);
             }
         }
+
+        AudioSource.PlayClipAtPoint(impact, transform.position);
     }
 }
