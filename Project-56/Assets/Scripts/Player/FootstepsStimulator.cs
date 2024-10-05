@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class FootstepsStimulator : MonoBehaviour {
@@ -12,14 +13,20 @@ public class FootstepsStimulator : MonoBehaviour {
     [SerializeField] float landAwareness = 4f;
     [SerializeField] int priority = 2;
 
+    bool canStimulate;
+    float waitBeforeStimulation = 1f;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start() {
+    IEnumerator Start() {
         player = GameManager.player;
         lastPos = transform.position;
 
         GameObject stimObj = new GameObject("Footstep stimulus");
         stimulus = stimObj.AddComponent<Stimulus>();
         stimulus.priority = priority;
+
+        yield return new WaitForSeconds(waitBeforeStimulation);
+        canStimulate = true;
     }
 
     private void OnEnable() {
@@ -39,17 +46,23 @@ public class FootstepsStimulator : MonoBehaviour {
     }
 
     void OnJump() {
+        if(!canStimulate) return;
+
         lastPos = transform.position;
         UpdateStimulus(jumpAwareness);
     }
 
     void OnLand() {
+        if (!canStimulate) return;
+
         lastPos = transform.position;
         UpdateStimulus(landAwareness);
     }
 
     // Update is called once per frame
     void Update() {
+        if (!canStimulate) return;
+
         if (Vector3.Distance(lastPos, transform.position) > minStepDist) {
             lastPos = transform.position;
 

@@ -20,7 +20,7 @@ public class Investigate : GAction
 
         gAgent.agent.speed = speed;
 
-        yield return gAgent.Goto(stim.transform.position);
+        yield return gAgent.Goto(stim.transform);
 
         gAgent.agent.SetDestination(transform.position);
         gAgent.agent.isStopped = true;

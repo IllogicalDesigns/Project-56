@@ -146,6 +146,16 @@ public class Cat : GAgent
     public void SoundStimuli(Stimulus stimulus) {
         if(HasGoal(attackGoal)) { return; }
 
+        //if higher prio comes in, investigate that
+        if(topStim != null && stimulus.priority > topStim.priority) {
+            RemoveGoal(investigateGoal);
+        }
+
+        //if the current stim is really unaware, investigate the new stim
+        if (topStim != null && topStim.awareness <= 0f) {
+            RemoveGoal(investigateGoal);
+        }
+
         if (AddGoal(investigateGoal, stimulus, 2, true)) {
             topStim = stimulus;
             Replan();

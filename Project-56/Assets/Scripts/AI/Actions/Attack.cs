@@ -19,7 +19,7 @@ public class Attack : GAction {
 
         gAgent.agent.speed = speed;
 
-        yield return gAgent.Goto(stim.transform.position, stoppingDist);
+        yield return gAgent.Goto(stim.transform, stoppingDist);
 
         hurtBox.SetActive(true);
         yield return new WaitForSeconds(activeTime);

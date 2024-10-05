@@ -21,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float playerMoveSpeed = 3.0f;
     [SerializeField] float playerCrouchSpeed = 1.0f;
     [SerializeField] float playerSprintSpeed = 6.0f;
-    public static float rotationSpeed = 64.0f;
+    public float rotationSpeed = 64.0f;
     public bool sprinting;
 
     [Header("Crouches")]
