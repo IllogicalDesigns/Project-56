@@ -31,7 +31,7 @@ public class Investigate : GAction
 
         yield return new WaitForSeconds(lookAtSpeed + waitAtInvestigate);
 
-        cat.topStim = null; //TODO?
+        //cat.topStim = null; //TODO? yes you can remove this.... but this is never null on cat....
         stimTransform = null;
 
         CompletedAction();
@@ -41,6 +41,11 @@ public class Investigate : GAction
     void Start()
     {
         AddEffects(Cat.investigateGoal, null);
+    }
+
+    public override void Interruppted() {
+        stimTransform = null;
+        base.Interruppted();
     }
 
     private void OnDrawGizmos() {

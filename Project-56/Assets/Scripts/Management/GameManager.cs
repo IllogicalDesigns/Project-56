@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     Throw thrower;
     public int cheeseCollected;
     public int cheeseGoal = 3;
+    public int cheeseHeal = 50;
 
     [SerializeField] GameObject escapeTrigger;
     [SerializeField] GameObject pauseMenu;
@@ -52,6 +53,8 @@ public class GameManager : MonoBehaviour
     public void CheeseCollected() {
         cheeseCollected++;
         FindAnyObjectByType<Dialogue>()?.DisplayDialogue("<Color=yellow>You picked up some cheese! (" + cheeseCollected + "/" + cheeseGoal+")");
+        Health playerHealth = player.GetComponent<Health>();
+        if(playerHealth != null) { playerHealth.ApplyHeal(new Damage(cheeseHeal)); }
 
         if(cheeseCollected >= cheeseGoal) {
             FindAnyObjectByType<Dialogue>()?.DisplayDialogue("<Color=yellow>All Cheese collected, Escape!");

@@ -12,7 +12,7 @@ public class SettingsMenu : MonoBehaviour
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() {
-        settingsManager = GetComponent<SettingsManager>();
+        settingsManager = FindAnyObjectByType<SettingsManager>();
 
         // Add listeners to slider events
         volumeSlider.onValueChanged.AddListener(delegate { OnVolumeChanged(); });

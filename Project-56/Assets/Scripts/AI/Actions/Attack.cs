@@ -25,6 +25,8 @@ public class Attack : GAction {
         yield return new WaitForSeconds(activeTime);
         hurtBox.SetActive(false);
 
+        BlacklistAction();
+
         CompletedAction();
     }
 
@@ -33,10 +35,15 @@ public class Attack : GAction {
         AddEffects(Cat.attackGoal, null);
     }
 
+    public override void Interruppted() {
+        stimTransform = null;
+        base.Interruppted();
+    }
+
     private void OnDrawGizmos() {
         if (stimTransform == null) return;
 
-        Gizmos.color = Color.green;
+        Gizmos.color = Color.red;
         Gizmos.DrawSphere(stimTransform.position, 0.5f);
     }
 }

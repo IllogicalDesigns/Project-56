@@ -1101,6 +1101,11 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   brushSettingsAsset: {fileID: 11400000, guid: efdee43e17c50e647a9b8a248129f2db, type: 2}
 --- !u!114 &20
 MonoBehaviour:
@@ -2049,7 +2054,7 @@ MonoBehaviour:
       index: 0
       contents: '{"m_Layout":1,"m_Collapsed":false,"m_Floating":false,"m_FloatingSnapOffset":{"x":-171.0,"y":-26.0},"m_SnapOffsetDelta":{"x":0.0,"y":0.0},"m_FloatingSnapCorner":3,"m_Size":{"x":0.0,"y":0.0},"m_SizeOverridden":false}'
       floating: 0
-      collapsed: 1
+      collapsed: 0
       snapOffset: {x: -171, y: -26}
       snapOffsetDelta: {x: 0, y: 0}
       snapCorner: 3
@@ -2565,7 +2570,7 @@ MonoBehaviour:
   m_WindowGUID: 39054a0cb500847459ed58c6c61303f3
   m_Gizmos: 1
   m_OverrideSceneCullingMask: 6917529027641081856
-  m_SceneIsLit: 0
+  m_SceneIsLit: 1
   m_SceneLighting: 1
   m_2DMode: 0
   m_isRotationLocked: 0
@@ -2573,9 +2578,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: -18.426844, y: 44.318245, z: -55.14629}
+    m_Target: {x: 26.099396, y: 46.05177, z: -50.89225}
     speed: 2
-    m_Value: {x: -18.426844, y: 44.318245, z: -55.14629}
+    m_Value: {x: 6.5846066, y: 16.058582, z: 13.572335}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -2621,13 +2626,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.47353616, y: -0.07591158, z: 0.04106281, w: -0.8765874}
+    m_Target: {x: 0.0483023, y: -0.94409096, z: 0.28607512, w: 0.15797521}
     speed: 2
-    m_Value: {x: -0.47353613, y: -0.075911574, z: 0.041062806, w: -0.87658733}
+    m_Value: {x: 0.0014634328, y: 0.9440455, z: -0.33001247, w: 0.0042326073}
   m_Size:
-    m_Target: 6.2553368
+    m_Target: 1.118422
     speed: 2
-    m_Value: 6.2553368
+    m_Value: 30.310888
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -2979,7 +2984,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 3e340500
     m_LastClickedID: 341054
-    m_ExpandedIDs: 0000000044bb000046bb000048bb00004abb00004cbb0000
+    m_ExpandedIDs: 0000000002c7000004c7000006c7000008c700000ac70000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -3008,7 +3013,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 0000000044bb000046bb000048bb00004abb00004cbb0000
+    m_ExpandedIDs: 0000000002c7000004c7000006c7000008c700000ac70000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 

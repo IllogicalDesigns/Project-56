@@ -6,145 +6,92 @@ public class Cat : GAgent
 {
     public const string patrolGoal = "patrolGoal";
     public const string investigateGoal = "investigateGoal";
+    public const string visialInvestigateGoal = "visialInvestigateGoal";
     public const string attackGoal = "attackGoal";
+    public const string stalkGoal = "stalkGoal";
+    public const string restGoal = "restGoal";
 
     public const string visualOnPlayer = "visualOnPlayer";
+    public const string pointOfInterest = "pointOfInterest";
 
     GameObject player;
     IVisionSensor visionSensor;
-    IHearingSensor hearingSensor;
+    IHearingSensor hearingSensor;  //TODO are we not hearing?
 
     List<Stimulus> soundStimuli = new List<Stimulus>();
     public Stimulus topStim;
     public Stimulus visualStim;
 
-    [SerializeField] float visualAwareness;
+    public float thresholdForPlayerVisualReaction = 1.5f;
+    public float minThreshold = 0.5f;
 
     public enum CatBehavior {
         Patrol,
         Investigate,
         Chase,
-        Hunt
+        Hunt,
+        WantRest
     }
 
     public CatBehavior behaviourState;
+
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         player = GameManager.player.gameObject;
-        AddGoal(patrolGoal, null, 5, false);
+        AddGoal(patrolGoal, null, 6, true);
+        AddGoal(restGoal, null, 7, false);
         visionSensor = GetComponent<IVisionSensor>();
         hearingSensor = GetComponent<IHearingSensor>();
     }
 
-    //// Update is called once per frame
-    //void Update()
-    //{
-    //    var multi = visionSensor.CanWeSeeTarget(player);
-
-    //    if(multi > 0f) {
-    //        if (!soundStimuli.Contains(visualStim))
-    //            soundStimuli.Add(visualStim);
-
-    //        visualStim.awareness += multi * (Time.deltaTime+Time.deltaTime);
-    //    }
-
-    //    if(multi > 0f) {
-    //        agentState.SetState(visualOnPlayer, true);
-    //    } else {
-    //        agentState.RemoveState(visualOnPlayer);
-    //    }
-
-    //    if (visualStim.awareness > 2f) {
-    //        if(AddGoal(attackGoal, player, 3, true)) {
-    //            Replan();
-    //        }
-
-    //        UpdateBestStim();
-    //    } else if (visualStim.awareness > 1f) {
-    //        UpdateBestStim();
-
-    //        foreach (var i in goals.Keys) {
-    //            if (i.sgoals.ContainsKey(investigateGoal)) {
-    //                if (!i.sgoals.ContainsValue(player)) {
-    //                    RemoveGoal(investigateGoal);
-    //                    break;
-    //                }
-    //            }
-    //        }
-
-    //        if (AddGoal(investigateGoal, player, 4, true)) {
-    //            topStim = visualStim;
-    //            Debug.Log("Investigate the player visually ");
-    //            Replan();
-    //        }
-    //    }
-
-    //    for (int i = 0; i < soundStimuli.Count; i++) {
-    //        if (soundStimuli[i].awareness <= 0)
-    //            soundStimuli.RemoveAt(i);
-
-    //        if (soundStimuli[i] == visualStim)
-    //            RemoveGoal(attackGoal);
-    //    }
-    //}
-
-    //void UpdateBestStim() {
-    //    var bestStim = GetMaxPriorityMostAwareStimulus();
-
-    //    if(bestStim != topStim) {
-    //        topStim = bestStim;
-    //        Debug.Log("We should investigate " + topStim.gameObject.name);
-
-    //        RemoveGoal(investigateGoal);
-    //        AddGoal(investigateGoal, bestStim, 4, true);
-
-    //        Replan();
-    //    }
-    //}
-
-    //public Stimulus GetMaxPriorityMostAwareStimulus() {
-    //    var maxPriorityMostAwareStimulus = soundStimuli.OrderByDescending(s => s.priority)
-    //                                                 .ThenByDescending(s => s.awareness)
-    //                                                 .First();
-
-    //    return maxPriorityMostAwareStimulus;
-    //}
-
-    //public void SoundStimuli(Stimulus stimulus) {
-    //    var heard = hearingSensor.CanWeHear(stimulus.gameObject);
-    //    if (!heard) return;
-
-    //    if (!soundStimuli.Contains(stimulus)) {
-    //        //Debug.Log("New sound heard " + stimulus.gameObject.name);
-    //        soundStimuli.Add(stimulus);
-    //        UpdateBestStim();
-    //    }
-
-    //    UpdateBestStim();
-
-    //}
-
     private void Update() {
+        HandleSeeingThePlayer();
+    }
+
+    private void HandleSeeingThePlayer() {
         var multi = visionSensor.CanWeSeeTarget(player);
 
         if (multi > 0f && !soundStimuli.Contains(visualStim))
             soundStimuli.Add(visualStim);
 
-        if (multi > 0f)
-            visualStim.awareness += multi * (Time.deltaTime + Time.deltaTime);
+        if (multi > 0f) {
+            agentState.SetState(visualOnPlayer, true);
+            visualStim.AdjustStim(multi * Time.deltaTime);
+        } else {
+            agentState.RemoveState(visualOnPlayer);
+        }
 
-        if(visualStim.awareness > 1.5f) {
-            if(AddGoal(attackGoal, player, 1, false)) {
+        if (visualStim.awareness > thresholdForPlayerVisualReaction) {
+            if (AddGoal(attackGoal, player, 1, false)) {
+                topStim = visualStim;
+                agentState.SetState(pointOfInterest, topStim.transform.position);
+                AddGoal(stalkGoal, null, 4, true);
+                RemoveGoal(investigateGoal);
+                Replan();
+            }
+        } else if(visualStim.awareness > minThreshold) {
+            if(topStim != visualStim)
+                RemoveGoal(investigateGoal);
+
+            if (AddGoal(investigateGoal, player, 3, true)) {
                 topStim = visualStim;
                 Replan();
             }
         }
     }
 
+    public void TouchedTheCat() {
+        //sound stim, ignoredd
+        //player is immediately hunted
+        //If the player is on the back eject them from the back with anim
+    }
+
     public void SoundStimuli(Stimulus stimulus) {
         if(HasGoal(attackGoal)) { return; }
+        if (!hearingSensor.CanWeHear(stimulus.gameObject)) { return; }
 
         //if higher prio comes in, investigate that
         if(topStim != null && stimulus.priority > topStim.priority) {
@@ -156,8 +103,10 @@ public class Cat : GAgent
             RemoveGoal(investigateGoal);
         }
 
-        if (AddGoal(investigateGoal, stimulus, 2, true)) {
+        if (AddGoal(investigateGoal, stimulus, 3, true)) {
             topStim = stimulus;
+            AddGoal(stalkGoal, null, 4, true);
+            agentState.SetState(pointOfInterest, topStim.transform.position);
             Replan();
         }
     }
