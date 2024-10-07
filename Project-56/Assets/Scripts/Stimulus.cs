@@ -26,10 +26,11 @@ public class Stimulus : MonoBehaviour
     public void UpdateStim(float _awareness) {
         var cat = FindAnyObjectByType<Cat>();
 
-        if(cat != null) {
+        awareness = _awareness;
+        awareness = Mathf.Clamp(awareness, 0f, maxAwareness);
+
+        if (cat != null) {
             cat.SoundStimuli(this);
         }
-
-        awareness = Mathf.Clamp(_awareness, 0f, maxAwareness);
     }
 }

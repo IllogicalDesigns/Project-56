@@ -3,7 +3,7 @@ using UnityEngine;
 public class ThrownNoiseMaker : MonoBehaviour
 {
     [SerializeField] GameObject stimulusPrefab;
-    [SerializeField] float startingAwareness = 3f;
+    [SerializeField] float startingAwareness = 2f;
     [SerializeField] Stimulus stimulus;
     [SerializeField] AudioClip impact;
 

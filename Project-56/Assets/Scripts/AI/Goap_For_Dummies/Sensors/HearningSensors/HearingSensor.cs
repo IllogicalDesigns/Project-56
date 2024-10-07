@@ -19,18 +19,18 @@ public class HearingSensor : MonoBehaviour, IHearingSensor {
     float debugDistance;
 
     private bool OnScreen() {
-        //onScreen = IsInFront(playerTransform);
+        onScreen = IsInFront(playerTransform);
 
-        //if (onScreen) {
-        //    onScreen = !Physics.Linecast(playerTransform.position, transform.position, playerSightTestMask);
-        //    if (onScreen) return true;
+        if (onScreen) {
+            onScreen = !Physics.Linecast(playerTransform.position, transform.position, playerSightTestMask);
+            if (onScreen) return true;
 
-        //    onScreen = !Physics.Linecast(playerTransform.position, tailTransform.position, playerSightTestMask);
-        //    if (onScreen) return true;
+            onScreen = !Physics.Linecast(playerTransform.position, tailTransform.position, playerSightTestMask);
+            if (onScreen) return true;
 
-        //    onScreen = !Physics.Linecast(playerTransform.position, headTransform.position, playerSightTestMask);
-        //    if (onScreen) return true;
-        //}
+            onScreen = !Physics.Linecast(playerTransform.position, headTransform.position, playerSightTestMask);
+            if (onScreen) return true;
+        }
 
         return onScreen;
     }

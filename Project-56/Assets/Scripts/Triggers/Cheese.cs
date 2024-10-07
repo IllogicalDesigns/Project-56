@@ -9,7 +9,11 @@ public class Cheese : MonoBehaviour
     [SerializeField] Ease ease = Ease.InOutSine;
 
     [SerializeField] Vector3 rotateVec = Vector3.up;
+    [SerializeField] Vector3 rotateVec2 = Vector3.up;
     [SerializeField] float rotDuration = 1f;
+    [SerializeField] float rotDuration2 = 1f;
+    [SerializeField] Ease ease2 = Ease.Linear;
+    [SerializeField] Ease ease3 = Ease.InOutSine;
 
     private void OnEnable() {
         var trigger = GetComponent<Trigger>();
@@ -31,8 +35,9 @@ public class Cheese : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        transform.DOLocalMoveY(transform.position.y + yHeight, (yDuration + Random.Range(0.01f, 1.01f))).SetLoops(-1, LoopType.Yoyo).SetEase(ease);
-        transform.DOBlendableLocalRotateBy(rotateVec, rotDuration).SetLoops(-1, LoopType.Incremental);
+        transform.DOMoveY(transform.position.y + yHeight, (yDuration + Random.Range(0.01f, 1.01f))).SetLoops(-1, LoopType.Yoyo).SetEase(ease);
+        transform.DOBlendableLocalRotateBy(rotateVec, rotDuration).SetLoops(-1, LoopType.Incremental).SetEase(ease2);
+        transform.DOBlendableLocalRotateBy(rotateVec2, rotDuration2).SetLoops(-1, LoopType.Yoyo).SetEase(ease3);
     }
 
     // Update is called once per frame

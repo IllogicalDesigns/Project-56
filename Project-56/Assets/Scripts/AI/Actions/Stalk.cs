@@ -65,6 +65,8 @@ public class Stalk : GAction
 
         ResetDebugs();
 
+        gAgent.agentState.RemoveState(Cat.pointOfInterest);
+
         CompletedAction();
     }
 

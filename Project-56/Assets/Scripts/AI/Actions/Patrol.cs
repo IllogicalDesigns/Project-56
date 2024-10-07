@@ -7,11 +7,15 @@ public class Patrol : GAction {
     [SerializeField] PatrolPath patrolPath;
     [SerializeField] float speed = 1.5f;
 
+    [SerializeField] AudioSource patrolSoundd;
+
     public override IEnumerator Perform() {
         if (patrolPath == null) {
             Debug.Log("No patrol path assigned to Patrol for " + gameObject.name);
             yield break;
         }
+
+        patrolSoundd.Play();
 
         gAgent.agent.speed = speed;
 
@@ -20,6 +24,8 @@ public class Patrol : GAction {
         foreach (var point in queue) {
             yield return gAgent.Goto(point.transform.position);
         }
+
+        patrolSoundd.Stop();
 
         CompletedAction();
     }
@@ -51,6 +57,11 @@ public class Patrol : GAction {
         }
 
         return closestIndex;
+    }
+
+    public override void Interruppted() {
+        patrolSoundd.Stop();
+        base.Interruppted();
     }
 
 

@@ -78,6 +78,7 @@ public class PlayerMovement : MonoBehaviour
         moveDirection += transform.right * Input.GetAxis(horizontalAxisName);
 
         sprinting = Input.GetKey(sprintKeyName);
+        if (sprinting) crouched = false;
         if (crouched) sprinting = false;
 
         HandleRotation();
@@ -165,6 +166,8 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private float GetSpeed() {
+        if(!isGrounded) return playerSprintSpeed;
+
         var speed = playerMoveSpeed;
 
         if (crouched) {

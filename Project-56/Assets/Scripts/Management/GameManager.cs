@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using DG.Tweening;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,6 +16,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject escapeTrigger;
     [SerializeField] GameObject pauseMenu;
     [SerializeField] NavMeshAgent cat;
+
+    bool canDie = true;
+
+    string levelToLoad;
 
     private void Awake() {
         player = FindAnyObjectByType<PlayerMovement>();
@@ -42,8 +48,20 @@ public class GameManager : MonoBehaviour
     }
 
     public void PlayerHasDied(Damage damage) {
+        if (!canDie) {
+            var playerHealth = player.GetComponent<Health>();
+            playerHealth.health = playerHealth.maxHealth;
+            return;
+        }
+
         Debug.Log("Restarting the player has died");
         RestartLevel();
+    }
+
+    public void Escaped() {
+        GetComponent<LoadScene>().TransitionToLevel("End");
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     public void RestartLevel() {
@@ -58,6 +76,7 @@ public class GameManager : MonoBehaviour
 
         if(cheeseCollected >= cheeseGoal) {
             FindAnyObjectByType<Dialogue>()?.DisplayDialogue("<Color=yellow>All Cheese collected, Escape!");
+            FindAnyObjectByType<CheeseSense>().findHomeNow = true;
             Debug.Log("All cheese collected!");
 
             escapeTrigger.SetActive(true);
@@ -85,6 +104,10 @@ public class GameManager : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Tab)) {
             SetPausedState();
+        }
+
+        if (Input.GetKeyDown(KeyCode.O)) {
+            canDie = !canDie;
         }
     }
 }

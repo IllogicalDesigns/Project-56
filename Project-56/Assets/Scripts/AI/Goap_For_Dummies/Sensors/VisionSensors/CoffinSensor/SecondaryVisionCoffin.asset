@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0cd1aa850f65e344b5d1c2590a4d59c, type: 3}
   m_Name: SecondaryVisionCoffin
   m_EditorClassIdentifier: 
-  farWidth: 2.5
-  farDist: 15
-  midWidth: 4
-  midDist: 5
+  farWidth: 1
+  farDist: 25
+  midWidth: 10
+  midDist: 10
   closeWidth: 1
   closeDist: 0
   debugColor: {r: 1, g: 0.8537103, b: 0, a: 1}

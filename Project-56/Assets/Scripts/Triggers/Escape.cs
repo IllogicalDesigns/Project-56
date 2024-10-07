@@ -14,7 +14,7 @@ public class Escape : MonoBehaviour
     }
 
     private void OnTriggered(Collider other) {
-        FindAnyObjectByType<GameManager>()?.RestartLevel();
+        FindAnyObjectByType<GameManager>()?.Escaped();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

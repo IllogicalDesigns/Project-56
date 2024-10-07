@@ -8,6 +8,9 @@ public class Throw : MonoBehaviour
 
     public bool canThrow = true;
 
+    public bool infinateAmmo;
+    public int ammo = 3;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -23,10 +26,17 @@ public class Throw : MonoBehaviour
     {
         if (!canThrow) { return; }
 
-        if (Input.GetMouseButtonDown(0)) {
+        if(Input.GetKeyDown(KeyCode.N)) {
+            infinateAmmo = !infinateAmmo;
+        }
+
+        if (Input.GetMouseButtonDown(0) && (infinateAmmo || ammo > 0)) {
+            if(!infinateAmmo) ammo--;
             var newPrefab = Instantiate(prefab, launchTransform.position, launchTransform.rotation) as GameObject;
             var rigidBody = newPrefab.GetComponent<Rigidbody>();
             rigidBody.AddForce(launchTransform.forward * force, ForceMode.Impulse);
+        } else if(Input.GetMouseButtonDown(0) && ammo <= 0) {
+            FindAnyObjectByType<Dialogue>().DisplayDialogue("Out of pebbles to throw...");
         }
     }
 
