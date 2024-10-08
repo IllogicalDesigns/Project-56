@@ -19,6 +19,8 @@ public class Investigate : GAction
 
         //yield return new WaitForSeconds(0.5f);
 
+        gameObject.SendMessage("SetBehaviorState", Cat.CatBehavior.Investigate);
+
         var cat = GetComponent<Cat>();
         var stim = cat.topStim;
         stimTransform = stim.transform;

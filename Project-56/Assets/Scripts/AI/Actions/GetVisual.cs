@@ -14,6 +14,8 @@ public class GetVisual : GAction {
         //var stim = cat.topStim;
         //stimTransform = stim.transform;
 
+        gameObject.SendMessage("SetBehaviorState", Cat.CatBehavior.Chase);
+
         var player = GameManager.player.transform;
 
         gAgent.agent.speed = speed;
@@ -30,7 +32,7 @@ public class GetVisual : GAction {
 
     private void OnDrawGizmos() {
         if (stimTransform == null) return;
-
+        
         Gizmos.color = Color.green;
         Gizmos.DrawSphere(stimTransform.position, 0.5f);
     }

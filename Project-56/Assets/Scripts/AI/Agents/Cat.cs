@@ -36,12 +36,14 @@ public class Cat : GAgent
     float stalkPlayerTimer = 10f;
     float stalkTimer;
 
+    public Light light;
+
     public enum CatBehavior {
         Patrol,
         Investigate,
         Chase,
-        Hunt,
-        WantRest
+        //Hunt,
+        //WantRest
     }
 
     public CatBehavior behaviourState;
@@ -61,6 +63,20 @@ public class Cat : GAgent
 
         visionSensor = GetComponent<IVisionSensor>();
         hearingSensor = GetComponent<IHearingSensor>();
+    }
+
+    public void SetBehaviorState(CatBehavior newState) {
+        behaviourState = newState;
+
+        if(behaviourState == CatBehavior.Patrol) {
+            light.color = Color.white;
+        }
+        else if (behaviourState == CatBehavior.Investigate) {
+            light.color = Color.yellow;
+        }
+        else if (behaviourState == CatBehavior.Chase) {
+            light.color = Color.red;
+        }
     }
 
     Transform FindClosestCheeseObject(Transform nearTransform) {

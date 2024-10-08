@@ -11,6 +11,8 @@ public class Patrol : GAction {
     public override IEnumerator Perform() {
         patrolPath = FindClosestPatrolPath(GameManager.player.transform);
 
+        gameObject.SendMessage("SetBehaviorState", Cat.CatBehavior.Patrol);
+
         if (patrolPath == null) {
             Debug.Log("No patrol path assigned to Patrol for " + gameObject.name);
             yield break;

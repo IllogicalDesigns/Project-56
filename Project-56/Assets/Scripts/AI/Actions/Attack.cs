@@ -32,6 +32,8 @@ public class Attack : GAction {
         //var stim = cat.topStim;
         //stimTransform = stim.transform;
 
+        gameObject.SendMessage("SetBehaviorState", Cat.CatBehavior.Chase);
+
         attackSource.Play();
 
         gAgent.agent.speed = speed;
