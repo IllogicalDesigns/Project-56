@@ -7,6 +7,10 @@ public class ThrownNoiseMaker : MonoBehaviour
     [SerializeField] Stimulus stimulus;
     [SerializeField] AudioClip impact;
 
+    [Space]
+    [SerializeField] float lifeTime = 5;
+    [SerializeField] GameObject RockPickupPrefab;
+
     private void OnCollisionEnter(Collision collision) {
         if (stimulus != null) {
             stimulus.transform.position = transform.position;
@@ -21,5 +25,14 @@ public class ThrownNoiseMaker : MonoBehaviour
         }
 
         AudioSource.PlayClipAtPoint(impact, transform.position);
+    }
+
+    private void Update() {
+        lifeTime -= Time.deltaTime;
+
+        if (lifeTime <= 0) {
+            if(RockPickupPrefab) Instantiate(RockPickupPrefab, transform.position, Quaternion.identity);
+            Destroy(gameObject);
+        }
     }
 }

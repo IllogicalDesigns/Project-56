@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 7254800770277584509}
   - component: {fileID: 1194856633704754924}
   - component: {fileID: 6980251028391733987}
-  - component: {fileID: 1969041214533513591}
   - component: {fileID: 4783241198850347095}
   m_Layer: 0
   m_Name: Throwing-Sphere
@@ -156,19 +155,8 @@ MonoBehaviour:
   startingAwareness: 3
   stimulus: {fileID: 0}
   impact: {fileID: 8300000, guid: bdbc04e96c0981f4fb7d0de1a9628c1c, type: 3}
---- !u!114 &1969041214533513591
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 771223705901345872}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c92c34501414124da5fac9cf67700a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lifetime: 5
+  lifeTime: 5
+  RockPickupPrefab: {fileID: 6798982817439361306, guid: 863d964e9b2d0a44b87ff0cfffac7653, type: 3}
 --- !u!65 &4783241198850347095
 BoxCollider:
   m_ObjectHideFlags: 0
