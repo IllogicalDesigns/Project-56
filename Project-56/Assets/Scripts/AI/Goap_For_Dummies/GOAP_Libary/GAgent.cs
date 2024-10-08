@@ -184,6 +184,7 @@ public class GAgent : MonoBehaviour {
         do {
             agent.SetDestination(hit.position);
             yield return new WaitForSeconds(0.1f);
+            //Debug.Log("realStopDist:" + (agent.stoppingDistance + stoppingDist) + " currentDist:" + Vector3.Distance(agent.transform.position, agent.destination));
         } while (Vector3.Distance(agent.transform.position, agent.destination) > agent.stoppingDistance + stoppingDist);
     }
     

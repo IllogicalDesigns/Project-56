@@ -4,7 +4,7 @@ using UnityEngine;
 public class PatrolPath : MonoBehaviour {
     public Transform[] patrolPoints;
 
-    private void OnDrawGizmos() {
+    private void OnDrawGizmosSelected() {
         if (patrolPoints.Length <= 1)
             return;
 

@@ -17,6 +17,16 @@ public class Attack : GAction {
     [SerializeField] AudioSource attackSource;
     [SerializeField] AudioClip audioClip;
 
+    public float coolDown = 3f;
+    public float timer;
+
+    public override bool PrePerform() {
+        if (timer > 0)
+            return false;
+
+        return base.PrePerform();
+    }
+
     public override IEnumerator Perform() {
         //var cat = GetComponent<Cat>();
         //var stim = cat.topStim;
@@ -27,6 +37,8 @@ public class Attack : GAction {
         gAgent.agent.speed = speed;
 
         hurtBox.SetActive(true);
+        timer = coolDown;
+        gAgent.agentState.RemoveState(Cat.AttackOffCoolDown);
         yield return gAgent.Goto(player, stoppingDist);
 
         
@@ -45,10 +57,13 @@ public class Attack : GAction {
     void Start() {
         player = GameManager.player.transform;
         AddPreconditions(Cat.visualOnPlayer, true);
+        AddPreconditions(Cat.attackState, true);
+        //AddPreconditions(Cat.AttackOffCoolDown, true);
         AddEffects(Cat.attackGoal, null);
     }
 
     public override void Interruppted() {
+        hurtBox.SetActive(false);
         stimTransform = null;
         attackSource.Stop();
         base.Interruppted();
@@ -59,6 +74,18 @@ public class Attack : GAction {
 
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(stimTransform.position, 0.5f);
+    }
+
+    private void Update() {
+        if(timer > 0) {
+            timer -= Time.deltaTime;
+        } else {
+            gAgent.agentState.SetState(Cat.AttackOffCoolDown, true);
+        }
+
+        if (running && !gAgent.agentState.hasState(Cat.visualOnPlayer)) {
+            gAgent.Replan();
+        }
     }
 }
 

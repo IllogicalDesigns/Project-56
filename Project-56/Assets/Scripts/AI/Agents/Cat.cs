@@ -1,5 +1,6 @@
 using DG.Tweening.Plugins.Options;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using UnityEngine;
 
@@ -13,7 +14,10 @@ public class Cat : GAgent
     public const string restGoal = "restGoal";
 
     public const string visualOnPlayer = "visualOnPlayer";
+    public const string attackState = "attackState";
     public const string pointOfInterest = "pointOfInterest";
+    public const string isStimulated = "isStimulated";
+    public const string AttackOffCoolDown = "AttackOffCoolDown";
 
     GameObject player;
     IVisionSensor visionSensor;
@@ -23,8 +27,9 @@ public class Cat : GAgent
     public Stimulus topStim;
     public Stimulus visualStim;
 
-    public float thresholdForPlayerVisualReaction = 1.5f;
+    public float thresholdForPlayerVisualReaction = 1f;
     public float minThreshold = 0.5f;
+    public float maxThresh = 4f;
 
     bool canSeePlayer;
 
@@ -41,13 +46,19 @@ public class Cat : GAgent
 
     public CatBehavior behaviourState;
 
+    public float attackStateTimer;
+    public float upMulti = 2f;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         player = GameManager.player.gameObject;
         //AddGoal(stalkGoal, null, 4, false);
-        AddGoal(patrolGoal, null, 6, true);
-        AddGoal(restGoal, null, 7, false);
+        AddGoal(patrolGoal, null, 6, false);
+        //AddGoal(restGoal, null, 7, false);
+        AddGoal(investigateGoal, null, 2, false);
+        AddGoal(attackGoal, null, 1, false);
+
         visionSensor = GetComponent<IVisionSensor>();
         hearingSensor = GetComponent<IHearingSensor>();
     }
@@ -60,6 +71,8 @@ public class Cat : GAgent
         float closestDistance = Mathf.Infinity;
         Vector3 currentPosition = nearTransform.position;
 
+        var bestCheese = allCheeses[0];
+
         foreach (Cheese cheese in allCheeses) {
             // Calculate the distance between this object and the Cheese object
             float distanceToCheese = Vector3.Distance(cheese.transform.position, currentPosition);
@@ -67,14 +80,40 @@ public class Cat : GAgent
             // If this distance is smaller than the previously stored one, update it
             if (distanceToCheese < closestDistance) {
                 closestDistance = distanceToCheese;
-                return cheese.transform;
+                bestCheese = cheese;
             }
         }
-        return null;
+
+
+        return bestCheese.transform;
     }
 
     private void Update() {
-        HandleSeeingThePlayer();
+        var multi = visionSensor.CanWeSeeTarget(player);
+
+        if (multi > 0f) {
+            agentState.SetState(visualOnPlayer, true);
+            if (attackStateTimer < maxThresh) attackStateTimer += upMulti * Time.deltaTime;
+        } else {
+            agentState.RemoveState(visualOnPlayer);
+            if(attackStateTimer > 0f) { attackStateTimer -= Time.deltaTime; }
+        }
+
+        if(attackStateTimer > thresholdForPlayerVisualReaction) {
+            agentState.SetState(attackState, true);
+        } else if(attackStateTimer <= 0.1f) {
+            agentState.RemoveState(attackState);
+        }
+
+        if(topStim != null && topStim.awareness <= 0) {
+            agentState.RemoveState(isStimulated);
+            topStim = null;
+        }
+
+        if(topStim == null)
+            agentState.RemoveState(isStimulated);
+
+        //HandleSeeingThePlayer();
 
         //if(stalkTimer > 0) {
         //    stalkTimer -= Time.deltaTime;
@@ -91,33 +130,33 @@ public class Cat : GAgent
     }
 
     private void HandleSeeingThePlayer() {
-        var multi = visionSensor.CanWeSeeTarget(player);
-        canSeePlayer = multi > 0f;
+        //var multi = visionSensor.CanWeSeeTarget(player);
+        //canSeePlayer = multi > 0f;
 
-        if (multi > 0f) {
-            agentState.SetState(pointOfInterest, topStim.transform.position);
+        //if (multi > 0f) {
+        //    agentState.SetState(pointOfInterest, topStim.transform.position);
 
-            if (visualStim.awareness > thresholdForPlayerVisualReaction) {
-                if (AddGoal(attackGoal, player, 1, false)) {
-                    //AddGoal(stalkGoal, null, 4, false);
-                    behaviourState = CatBehavior.Chase;
-                    Replan();
-                }
-            } else {
-                SoundStimuli(visualStim, true, 1f);
-            }
-        }
+        //    if (visualStim.awareness > thresholdForPlayerVisualReaction) {
+        //        if (AddGoal(attackGoal, player, 1, false)) {
+        //            //AddGoal(stalkGoal, null, 4, false);
+        //            behaviourState = CatBehavior.Chase;
+        //            Replan();
+        //        }
+        //    } else {
+        //        SoundStimuli(visualStim, true, 1f);
+        //    }
+        //}
 
-        //if (multi > 0f && !soundStimuli.Contains(visualStim))
-        //    soundStimuli.Add(visualStim);
+        ////if (multi > 0f && !soundStimuli.Contains(visualStim))
+        ////    soundStimuli.Add(visualStim);
 
-        if (multi > 0f) {
-            agentState.SetState(visualOnPlayer, true);
-            visualStim.AdjustStim(multi * Time.deltaTime);
-        }
-        else {
-            agentState.RemoveState(visualOnPlayer);
-        }
+        //if (multi > 0f) {
+        //    agentState.SetState(visualOnPlayer, true);
+        //    visualStim.AdjustStim(multi * Time.deltaTime);
+        //}
+        //else {
+        //    agentState.RemoveState(visualOnPlayer);
+        //}
 
         //if (visualStim.awareness > thresholdForPlayerVisualReaction) {
         //    if (AddGoal(attackGoal, player, 1, false)) {
@@ -145,14 +184,14 @@ public class Cat : GAgent
     }
 
     public void SoundStimuli(Stimulus stimulus, bool ignoreHearing = false, float boost = 0f) {
-        if (currentAction is Attack) { return; }
-        if(topStim == stimulus) { return; }
+        //if (currentAction is Attack) { return; }
+        if(topStim != null && topStim == stimulus) { return; }  //restimulated, ignore
         if (!hearingSensor.CanWeHear(stimulus.gameObject)) { return; }
 
-        if (topStim != null) Debug.Log("topStim="+topStim.name + ":" + topStim.awareness + "  " + stimulus.name + ":" + stimulus.awareness);
-        else Debug.Log("topStim=" + "Null" + "  " + stimulus.name + ":" + stimulus.awareness);
+        //if (topStim != null) Debug.Log("topStim="+topStim.name + ":" + topStim.awareness + "  " + stimulus.name + ":" + stimulus.awareness);
+        //else Debug.Log("topStim=" + "Null" + "  " + stimulus.name + ":" + stimulus.awareness);
 
-        if (topStim != null) {
+        if (topStim != null) {  // is the new stim closer?
             var topDist = Vector3.Distance(topStim.transform.position, transform.position);
             var newDist = Vector3.Distance(topStim.transform.position, transform.position);
 
@@ -161,28 +200,34 @@ public class Cat : GAgent
 
         if (topStim != null && stimulus.awareness + boost < topStim.awareness) { return; }
 
-        behaviourState = CatBehavior.Investigate;
-        AddGoal(investigateGoal, stimulus, 3, true);
+        agentState.SetState(isStimulated, true);
         topStim = stimulus;
-        Replan();
-        
 
-        ////if higher prio comes in, investigate that
-        //if(topStim != null && stimulus.priority > topStim.priority) {
-        //    RemoveGoal(investigateGoal);
-        //}
+        if(!agentState.hasState(attackState))
+            Replan();
 
-            ////if the current stim is really unaware, investigate the new stim
-            //if (topStim != null && topStim.awareness <= 0f) {
-            //    RemoveGoal(investigateGoal);
-            //}
+        //behaviourState = CatBehavior.Investigate;
+        //AddGoal(investigateGoal, stimulus, 3, true);
+        //topStim = stimulus;
+        //Replan();
 
-            //if (AddGoal(investigateGoal, stimulus, 3, true)) {
-            //    topStim = stimulus;
-            //    AddGoal(stalkGoal, null, 4, true);
-            //    agentState.SetState(pointOfInterest, topStim.transform.position);
-            //    Replan();
-            //}
+
+        //////if higher prio comes in, investigate that
+        ////if(topStim != null && stimulus.priority > topStim.priority) {
+        ////    RemoveGoal(investigateGoal);
+        ////}
+
+        //    ////if the current stim is really unaware, investigate the new stim
+        //    //if (topStim != null && topStim.awareness <= 0f) {
+        //    //    RemoveGoal(investigateGoal);
+        //    //}
+
+        //    //if (AddGoal(investigateGoal, stimulus, 3, true)) {
+        //    //    topStim = stimulus;
+        //    //    AddGoal(stalkGoal, null, 4, true);
+        //    //    agentState.SetState(pointOfInterest, topStim.transform.position);
+        //    //    Replan();
+        //    //}
     }
 }
 

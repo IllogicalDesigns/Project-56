@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 7254800770277584509}
   - component: {fileID: 1194856633704754924}
   - component: {fileID: 6980251028391733987}
+  - component: {fileID: 1969041214533513591}
+  - component: {fileID: 4783241198850347095}
   m_Layer: 0
   m_Name: Throwing-Sphere
   m_TagString: Untagged
@@ -97,7 +99,7 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 771223705901345872}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: dd6a694f4572a54478c6574ee296343a, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -107,7 +109,7 @@ SphereCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
@@ -154,6 +156,40 @@ MonoBehaviour:
   startingAwareness: 3
   stimulus: {fileID: 0}
   impact: {fileID: 8300000, guid: bdbc04e96c0981f4fb7d0de1a9628c1c, type: 3}
+--- !u!114 &1969041214533513591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 771223705901345872}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c92c34501414124da5fac9cf67700a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lifetime: 5
+--- !u!65 &4783241198850347095
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 771223705901345872}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.7, y: 0.7, z: 0.7}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &2840253071771916923
 PrefabInstance:
   m_ObjectHideFlags: 0

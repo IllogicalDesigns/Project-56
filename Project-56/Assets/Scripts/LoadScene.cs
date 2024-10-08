@@ -23,9 +23,15 @@ public class LoadScene : MonoBehaviour
 
     public void TransitionToLevel(string lvlString) {
         levelToLoad = lvlString;
-        image = GameObject.Find("fadeImage").GetComponent<Image>();
-        image.DOFade(1f, 1f);
         Invoke("loadTheLevel", 1f);
+
+        var imageObj = GameObject.Find("fadeImage");
+        if (imageObj != null) {
+            image = imageObj.GetComponent<Image>();
+
+            if(image != null)
+                image.DOFade(1f, 1f);
+        }
     }
 
     public void LoadLeve(int lvlInt) {

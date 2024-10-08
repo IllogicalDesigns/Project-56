@@ -1,6 +1,8 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+
+
 public class NoticeUI : MonoBehaviour {
     [SerializeField] Slider slider;
     [SerializeField] Slider visualSlider;
@@ -9,17 +11,35 @@ public class NoticeUI : MonoBehaviour {
     [SerializeField] Cat cat;
     [SerializeField] bool hide;
 
+    bool show;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() {
         //slider.maxValue = cat;
         slider.value = 0;
+
+        slider.gameObject.SetActive(false);
+        visualSlider.gameObject.SetActive(false);
+        text.gameObject.SetActive(false);
+        visualtext.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
     void Update() {
+        if(Input.GetKeyDown(KeyCode.P)) {
+            show = !show;
+            slider.gameObject.SetActive(show);
+            visualSlider.gameObject.SetActive(show);
+            text.gameObject.SetActive(show);
+            visualtext.gameObject.SetActive(show);
+        }
+
         if(hide) slider.gameObject.SetActive(cat.topStim != null);
 
-        text.text = (cat.topStim == null ? "null" : cat.topStim.name) + ":" + cat.currentAction.actionName;
+        if(cat.topStim != null && cat.currentAction != null) 
+            text.text = cat.topStim.name + ":" + cat.currentAction.actionName;
+        else if(cat.currentAction != null)
+            text.text = "null" + ":" + cat.currentAction.actionName;
 
         HandleTopStim();
         HandleVisualStim();

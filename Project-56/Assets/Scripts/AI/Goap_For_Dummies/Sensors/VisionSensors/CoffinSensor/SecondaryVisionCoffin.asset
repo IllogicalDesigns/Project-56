@@ -17,5 +17,5 @@ MonoBehaviour:
   midWidth: 10
   midDist: 10
   closeWidth: 1
-  closeDist: 0
+  closeDist: -3
   debugColor: {r: 1, g: 0.8537103, b: 0, a: 1}

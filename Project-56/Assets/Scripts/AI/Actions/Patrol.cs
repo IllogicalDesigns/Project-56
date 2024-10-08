@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-
 using UnityEngine;
 
 public class Patrol : GAction {
@@ -10,10 +9,14 @@ public class Patrol : GAction {
     [SerializeField] AudioSource patrolSoundd;
 
     public override IEnumerator Perform() {
+        patrolPath = FindClosestPatrolPath(GameManager.player.transform);
+
         if (patrolPath == null) {
             Debug.Log("No patrol path assigned to Patrol for " + gameObject.name);
             yield break;
         }
+
+        Debug.Log("Using " + patrolPath.gameObject.name);
 
         patrolSoundd.Play();
 
@@ -28,6 +31,28 @@ public class Patrol : GAction {
         patrolSoundd.Stop();
 
         CompletedAction();
+    }
+
+    PatrolPath FindClosestPatrolPath(Transform nearTransform) {
+        // Get all objects with the "Cheese" script attached
+        var allPatrols = FindObjectsOfType<PatrolPath>();
+
+        float closestDistance = Mathf.Infinity;
+        Vector3 currentPosition = nearTransform.position;
+
+        var bestPath = allPatrols[0];
+
+        foreach (PatrolPath path in allPatrols) {
+            // Calculate the distance between this object and the Cheese object
+            float distanceToPath = Vector3.Distance(path.transform.position, currentPosition);
+
+            // If this distance is smaller than the previously stored one, update it
+            if (distanceToPath < closestDistance) {
+                closestDistance = distanceToPath;
+                bestPath = path;
+            }
+        }
+        return bestPath;
     }
 
     private Transform[] GetReorderedQueueOfPoints() {

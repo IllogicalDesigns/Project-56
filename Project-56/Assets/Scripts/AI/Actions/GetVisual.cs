@@ -10,13 +10,15 @@ public class GetVisual : GAction {
     Transform stimTransform;
 
     public override IEnumerator Perform() {
-        var cat = GetComponent<Cat>();
-        var stim = cat.topStim;
-        stimTransform = stim.transform;
+        //var cat = GetComponent<Cat>();
+        //var stim = cat.topStim;
+        //stimTransform = stim.transform;
+
+        var player = GameManager.player.transform;
 
         gAgent.agent.speed = speed;
 
-        yield return gAgent.Goto(stim.transform.position, stoppingDist);
+        yield return gAgent.Goto(player.position, stoppingDist);
 
         CompletedAction();
     }
@@ -31,6 +33,12 @@ public class GetVisual : GAction {
 
         Gizmos.color = Color.green;
         Gizmos.DrawSphere(stimTransform.position, 0.5f);
+    }
+
+    private void Update() {
+        if (running && !gAgent.agentState.hasState(Cat.attackState)) {
+            gAgent.Replan();
+        }
     }
 }
 

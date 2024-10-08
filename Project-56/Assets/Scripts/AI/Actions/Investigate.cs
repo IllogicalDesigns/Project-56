@@ -13,9 +13,11 @@ public class Investigate : GAction
 
     public override IEnumerator Perform() {
         if(meow) AudioSource.PlayClipAtPoint(meow, transform.position);
-        gAgent.agent.SetDestination(transform.position);
-        gAgent.agent.isStopped = true;
-        yield return new WaitForSeconds(0.5f);
+
+        //gAgent.agent.SetDestination(transform.position);
+        //gAgent.agent.isStopped = true;
+
+        //yield return new WaitForSeconds(0.5f);
 
         var cat = GetComponent<Cat>();
         var stim = cat.topStim;
@@ -25,17 +27,17 @@ public class Investigate : GAction
 
         yield return gAgent.Goto(stim.transform);
 
-        gAgent.agent.SetDestination(transform.position);
-        gAgent.agent.isStopped = true;
+        //gAgent.agent.SetDestination(transform.position);
+        //gAgent.agent.isStopped = true;
 
-        var vec = stim.transform.position;
-        vec.y = transform.position.y;
-        yield return transform.DOLookAt(vec, lookAtSpeed);
+        //var vec = stim.transform.position;
+        //vec.y = transform.position.y;
+        //yield return transform.DOLookAt(vec, lookAtSpeed);
 
-        yield return new WaitForSeconds(lookAtSpeed + waitAtInvestigate);
+        //yield return new WaitForSeconds(lookAtSpeed + waitAtInvestigate);
 
-        cat.topStim = null; //We no longer have a top stim, we investigated it away
-        stimTransform = null;
+        //cat.topStim = null; //We no longer have a top stim, we investigated it away
+        //stimTransform = null;
 
         CompletedAction();
     }
@@ -43,6 +45,7 @@ public class Investigate : GAction
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        AddPreconditions(Cat.isStimulated, null);
         AddEffects(Cat.investigateGoal, null);
     }
 

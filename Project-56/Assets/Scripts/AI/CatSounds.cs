@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CatSounds : MonoBehaviour {
     Vector3 lastPos = Vector3.zero;
-    private float minStepDist = 1.5f;
+    [SerializeField] float minStepDist = 1.5f;
 
     [SerializeField] CinemachineImpulseSource stepImpulse;
     //[SerializeField] float impulseSize = 0.1f;
