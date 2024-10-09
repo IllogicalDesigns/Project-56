@@ -4,12 +4,17 @@ using UnityEngine;
 
 public class Patrol : GAction {
     [SerializeField] PatrolPath patrolPath;
+    [SerializeField] PatrolPath homePatrolPath;
     [SerializeField] float speed = 1.5f;
 
     [SerializeField] AudioSource patrolSoundd;
+    public bool patrolAroundTV;
 
     public override IEnumerator Perform() {
-        patrolPath = FindClosestPatrolPath(GameManager.player.transform);
+        if (patrolAroundTV)
+            patrolPath = homePatrolPath;
+        else
+            patrolPath = FindClosestPatrolPath(GameManager.player.transform);
 
         gameObject.SendMessage("SetBehaviorState", Cat.CatBehavior.Patrol);
 

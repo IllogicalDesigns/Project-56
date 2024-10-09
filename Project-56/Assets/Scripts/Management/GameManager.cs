@@ -55,7 +55,12 @@ public class GameManager : MonoBehaviour
         }
 
         Debug.Log("Restarting the player has died");
-        RestartLevel();
+        var load = GetComponent<LoadScene>();
+        var imageObj = GameObject.Find("fadeImage");
+        var img = imageObj.GetComponent<Image>();
+        img.color = Color.black;
+        load.TransitionToLevel(SceneManager.GetActiveScene().name);
+        //RestartLevel();
     }
 
     public void Escaped() {
@@ -77,6 +82,7 @@ public class GameManager : MonoBehaviour
         if(cheeseCollected >= cheeseGoal) {
             FindAnyObjectByType<Dialogue>()?.DisplayDialogue("<Color=yellow>All Cheese collected, Escape!");
             FindAnyObjectByType<CheeseSense>().findHomeNow = true;
+            FindAnyObjectByType<Patrol>().patrolAroundTV = true;
             Debug.Log("All cheese collected!");
 
             escapeTrigger.SetActive(true);
@@ -108,6 +114,12 @@ public class GameManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.O)) {
             canDie = !canDie;
+        }
+
+        if (Input.GetKeyDown(KeyCode.L)) {
+            for (int i = 0; i < cheeseGoal+1; i++) {
+                CheeseCollected();
+            }
         }
     }
 }

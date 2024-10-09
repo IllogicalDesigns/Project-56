@@ -17,15 +17,15 @@ public class AIDirector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Vector3.Distance(player.transform.position, transform.position) < nearPlayer) {
-            timeNearPlayer += Time.deltaTime;
-        }
+        //if (Vector3.Distance(player.transform.position, transform.position) < nearPlayer) {
+        //    timeNearPlayer += Time.deltaTime;
+        //}
 
-        if (timeNearPlayer > tooMuchTimeNearPlayer) {
-            catAgent.RemoveGoal(Cat.patrolGoal);
-            if (catAgent.currentAction is Patrol)
-                catAgent.Replan();
-        }
+        //if (timeNearPlayer > tooMuchTimeNearPlayer) {
+        //    catAgent.RemoveGoal(Cat.patrolGoal);
+        //    if (catAgent.currentAction is Patrol)
+        //        catAgent.Replan();
+        //}
     }
 
     public void Rested() {

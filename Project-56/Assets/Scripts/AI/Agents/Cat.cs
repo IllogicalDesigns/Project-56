@@ -36,7 +36,7 @@ public class Cat : GAgent
     float stalkPlayerTimer = 10f;
     float stalkTimer;
 
-    public Light light;
+    public bool canHearThings = true;
 
     public enum CatBehavior {
         Patrol,
@@ -67,16 +67,6 @@ public class Cat : GAgent
 
     public void SetBehaviorState(CatBehavior newState) {
         behaviourState = newState;
-
-        if(behaviourState == CatBehavior.Patrol) {
-            light.color = Color.white;
-        }
-        else if (behaviourState == CatBehavior.Investigate) {
-            light.color = Color.yellow;
-        }
-        else if (behaviourState == CatBehavior.Chase) {
-            light.color = Color.red;
-        }
     }
 
     Transform FindClosestCheeseObject(Transform nearTransform) {
@@ -105,92 +95,41 @@ public class Cat : GAgent
     }
 
     private void Update() {
-        var multi = visionSensor.CanWeSeeTarget(player);
+        HandleSeeingThePlayer();
 
-        if (multi > 0f) {
-            agentState.SetState(visualOnPlayer, true);
-            if (attackStateTimer < maxThresh) attackStateTimer += upMulti * Time.deltaTime;
-        } else {
-            agentState.RemoveState(visualOnPlayer);
-            if(attackStateTimer > 0f) { attackStateTimer -= Time.deltaTime; }
-        }
-
-        if(attackStateTimer > thresholdForPlayerVisualReaction) {
-            agentState.SetState(attackState, true);
-        } else if(attackStateTimer <= 0.1f) {
-            agentState.RemoveState(attackState);
-        }
-
-        if(topStim != null && topStim.awareness <= 0) {
+        if (topStim != null && topStim.awareness <= 0) {
             agentState.RemoveState(isStimulated);
             topStim = null;
         }
 
         if(topStim == null)
             agentState.RemoveState(isStimulated);
-
-        //HandleSeeingThePlayer();
-
-        //if(stalkTimer > 0) {
-        //    stalkTimer -= Time.deltaTime;
-        //} else {
-        //    var cheese = FindClosestCheeseObject(player.transform);
-        //    if (cheese) {
-        //        var cheesePos = cheese.position;
-        //        agentState.SetState(pointOfInterest, cheesePos);
-        //        if(!(currentAction is Investigate) && !(currentAction is Attack) && !(currentAction is Stalk))
-        //            Replan();
-        //    }
-        //    stalkTimer = stalkPlayerTimer;
-        //}
     }
 
     private void HandleSeeingThePlayer() {
-        //var multi = visionSensor.CanWeSeeTarget(player);
-        //canSeePlayer = multi > 0f;
+        var multi = visionSensor.CanWeSeeTarget(player);
 
-        //if (multi > 0f) {
-        //    agentState.SetState(pointOfInterest, topStim.transform.position);
+        if (multi > 0f) {
+            agentState.SetState(visualOnPlayer, visualStim.awareness);
+            visualStim.AdjustStim(multi * Time.deltaTime);
+            if (attackStateTimer < maxThresh) attackStateTimer += upMulti * Time.deltaTime;
+        }
+        else {
+            agentState.RemoveState(visualOnPlayer);
+            if (attackStateTimer > 0f) { attackStateTimer -= Time.deltaTime; }
+        }
 
-        //    if (visualStim.awareness > thresholdForPlayerVisualReaction) {
-        //        if (AddGoal(attackGoal, player, 1, false)) {
-        //            //AddGoal(stalkGoal, null, 4, false);
-        //            behaviourState = CatBehavior.Chase;
-        //            Replan();
-        //        }
-        //    } else {
-        //        SoundStimuli(visualStim, true, 1f);
-        //    }
-        //}
-
-        ////if (multi > 0f && !soundStimuli.Contains(visualStim))
-        ////    soundStimuli.Add(visualStim);
-
-        //if (multi > 0f) {
-        //    agentState.SetState(visualOnPlayer, true);
-        //    visualStim.AdjustStim(multi * Time.deltaTime);
-        //}
-        //else {
-        //    agentState.RemoveState(visualOnPlayer);
-        //}
-
-        //if (visualStim.awareness > thresholdForPlayerVisualReaction) {
-        //    if (AddGoal(attackGoal, player, 1, false)) {
-        //        topStim = visualStim;
-        //        agentState.SetState(pointOfInterest, topStim.transform.position);
-        //        AddGoal(stalkGoal, null, 4, true);
-        //        RemoveGoal(investigateGoal);
-        //        Replan();
-        //    }
-        //} else if(visualStim.awareness > minThreshold) {
-        //    if(topStim != visualStim)
-        //        RemoveGoal(investigateGoal);
-
-        //    if (AddGoal(investigateGoal, player, 3, true)) {
-        //        topStim = visualStim;
-        //        Replan();
-        //    }
-        //}
+        if (attackStateTimer > thresholdForPlayerVisualReaction) {
+            agentState.SetState(attackState, true);
+        }
+        else if (attackStateTimer > minThreshold && topStim != visualStim) {
+            topStim = visualStim;
+            agentState.SetState(isStimulated, true);
+            Replan();
+        }
+        else if (attackStateTimer <= 0.1f) {
+            agentState.RemoveState(attackState);
+        }
     }
 
     public void TouchedTheCat() {
@@ -200,12 +139,11 @@ public class Cat : GAgent
     }
 
     public void SoundStimuli(Stimulus stimulus, bool ignoreHearing = false, float boost = 0f) {
-        //if (currentAction is Attack) { return; }
-        if(topStim != null && topStim == stimulus) { return; }  //restimulated, ignore
+        if (!canHearThings)
+            return;
+        
+        if (topStim != null && topStim == stimulus) { return; }  //restimulated, ignore
         if (!hearingSensor.CanWeHear(stimulus.gameObject)) { return; }
-
-        //if (topStim != null) Debug.Log("topStim="+topStim.name + ":" + topStim.awareness + "  " + stimulus.name + ":" + stimulus.awareness);
-        //else Debug.Log("topStim=" + "Null" + "  " + stimulus.name + ":" + stimulus.awareness);
 
         if (topStim != null) {  // is the new stim closer?
             var topDist = Vector3.Distance(topStim.transform.position, transform.position);
@@ -221,29 +159,6 @@ public class Cat : GAgent
 
         if(!agentState.hasState(attackState))
             Replan();
-
-        //behaviourState = CatBehavior.Investigate;
-        //AddGoal(investigateGoal, stimulus, 3, true);
-        //topStim = stimulus;
-        //Replan();
-
-
-        //////if higher prio comes in, investigate that
-        ////if(topStim != null && stimulus.priority > topStim.priority) {
-        ////    RemoveGoal(investigateGoal);
-        ////}
-
-        //    ////if the current stim is really unaware, investigate the new stim
-        //    //if (topStim != null && topStim.awareness <= 0f) {
-        //    //    RemoveGoal(investigateGoal);
-        //    //}
-
-        //    //if (AddGoal(investigateGoal, stimulus, 3, true)) {
-        //    //    topStim = stimulus;
-        //    //    AddGoal(stalkGoal, null, 4, true);
-        //    //    agentState.SetState(pointOfInterest, topStim.transform.position);
-        //    //    Replan();
-        //    //}
     }
 }
 
