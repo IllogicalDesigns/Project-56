@@ -14,7 +14,7 @@ public class GetVisual : GAction {
         //var stim = cat.topStim;
         //stimTransform = stim.transform;
 
-        gameObject.SendMessage("SetBehaviorState", Cat.CatBehavior.Chase);
+        gameObject.SendMessage("SetBehaviorState", Cat.CatBehavior.Attack);
 
         var player = GameManager.player.transform;
 

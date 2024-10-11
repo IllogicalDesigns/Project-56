@@ -5,7 +5,7 @@ public class Stimulus : MonoBehaviour
     public float awareness;
     public int priority = 1;
     public float maxAwareness = 3f;
-
+    public bool isVisual;
     bool increasedThisFrame;
 
     private void Update() {

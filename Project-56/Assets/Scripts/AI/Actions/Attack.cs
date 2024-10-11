@@ -32,7 +32,9 @@ public class Attack : GAction {
         //var stim = cat.topStim;
         //stimTransform = stim.transform;
 
-        gameObject.SendMessage("SetBehaviorState", Cat.CatBehavior.Chase);
+        gameObject.SendMessage("SetBehaviorState", Cat.CatBehavior.Attack);
+
+        transform.LookAt(player.position);
 
         attackSource.Play();
 
@@ -59,7 +61,7 @@ public class Attack : GAction {
     void Start() {
         player = GameManager.player.transform;
         AddPreconditions(Cat.visualOnPlayer, true);
-        AddPreconditions(Cat.attackState, true);
+        //AddPreconditions(Cat.attackState, true);
         //AddPreconditions(Cat.AttackOffCoolDown, true);
         AddEffects(Cat.attackGoal, null);
     }

@@ -64,6 +64,12 @@ public class InfluenceMap3D : MonoBehaviour {
         return copy;
     }
 
+    public bool IsWithinBounds(Vector3Int gridPos) {
+        return gridPos.x >= 0 && gridPos.x < grid.GetLength(0) &&
+               gridPos.y >= 0 && gridPos.y < grid.GetLength(1) &&
+               gridPos.z >= 0 && gridPos.z < grid.GetLength(2);
+    }
+
     public Vector3 GetStart() {
         return start;
     }
@@ -94,6 +100,11 @@ public class InfluenceMap3D : MonoBehaviour {
         var x = Mathf.RoundToInt(localPos.x / size);
         var y = Mathf.RoundToInt(localPos.y / size);
         var z = Mathf.RoundToInt(localPos.z / size);
+
+        x = Mathf.Clamp(x, 1, grid.GetLength(0));
+        y = Mathf.Clamp(y, 1, grid.GetLength(1));
+        z = Mathf.Clamp(z, 1, grid.GetLength(2));
+
         return new Vector3Int(x-1, y-1, z-1);
     }
 
@@ -330,6 +341,7 @@ public class InfluenceMap3D : MonoBehaviour {
             {
                 for (int z = 0; z < zSize; z++)
                 {
+                    if (grid[x, y, z] == STARTING) continue;
                     Vector3 worldPostion = GridToWorldPosition(x, y, z);
                     Gizmos.color = ByteToColor(grid[x, y, z]);
                     Gizmos.DrawCube(worldPostion, new Vector3(halfExtent, ZHEIGHT, halfExtent));

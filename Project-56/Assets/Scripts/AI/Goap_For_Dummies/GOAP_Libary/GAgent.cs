@@ -177,7 +177,7 @@ public class GAgent : MonoBehaviour {
     public IEnumerator Goto(Vector3 point, float stoppingDist = 2f, float resampleDist = 2f, float rotationSpeed = 300) {
         agent.isStopped = false;
         agent.stoppingDistance = stoppingDist - 0.2f;
-        agent.angularSpeed = rotationSpeed;
+        //agent.angularSpeed = rotationSpeed;
         //TODO fix this to see if we are at the agent destination as that is different from the point passed in
         var navPoint = NavMesh.SamplePosition(point, out var hit, resampleDist, NavMesh.AllAreas);
         

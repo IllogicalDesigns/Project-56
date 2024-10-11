@@ -8,7 +8,7 @@ public class Investigate : GAction
     [SerializeField] float speed = 3f;
     [SerializeField] float fastSpeed = 8f;
     [SerializeField] float lookAtSpeed = 3f;
-    Transform stimTransform;
+    [SerializeField] Transform stimTransform;
     [SerializeField] AudioClip meow;
 
     public override IEnumerator Perform() {
@@ -27,7 +27,15 @@ public class Investigate : GAction
 
         gAgent.agent.speed = speed;
 
-        yield return gAgent.Goto(stim.transform);
+        do {
+            if (gAgent.agent.velocity.magnitude < 1f) break;
+
+            gAgent.agent.SetDestination(stimTransform.position);
+
+            yield return new WaitForSeconds(1f);
+        } while (Vector3.Distance(gAgent.agent.destination, gAgent.transform.position) > gAgent.agent.stoppingDistance);
+
+        yield return new WaitForSeconds(waitAtInvestigate);
 
         //gAgent.agent.SetDestination(transform.position);
         //gAgent.agent.isStopped = true;
@@ -47,7 +55,7 @@ public class Investigate : GAction
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        AddPreconditions(Cat.isStimulated, null);
+        //AddPreconditions(Cat.isStimulated, null);
         AddEffects(Cat.investigateGoal, null);
     }
 

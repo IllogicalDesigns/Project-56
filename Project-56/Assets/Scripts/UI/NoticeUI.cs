@@ -60,7 +60,7 @@ public class NoticeUI : MonoBehaviour {
         visualSlider.maxValue = cat.visualStim.maxAwareness;
         visualSlider.value = cat.visualStim.awareness;
 
-        if(visualSlider.value > cat.thresholdForPlayerVisualReaction) {
+        if(visualSlider.value > cat.attackThresh) {
             visualtext.text = "threshold reached";
         } else if (visualSlider.value > cat.minThreshold) {
             visualtext.text = "min threshold";

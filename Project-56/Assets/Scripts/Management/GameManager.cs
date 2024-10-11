@@ -76,14 +76,14 @@ public class GameManager : MonoBehaviour
     public void CheeseCollected() {
         cheeseCollected++;
         FindAnyObjectByType<Dialogue>()?.DisplayDialogue("<Color=yellow>You picked up some cheese! (" + cheeseCollected + "/" + cheeseGoal+")");
+        FindAnyObjectByType<HelpManager>()?.DelayGPSReminder();
         Health playerHealth = player.GetComponent<Health>();
         if(playerHealth != null) { playerHealth.ApplyHeal(new Damage(cheeseHeal)); }
 
         if(cheeseCollected >= cheeseGoal) {
-            FindAnyObjectByType<Dialogue>()?.DisplayDialogue("<Color=yellow>All Cheese collected, Escape!");
+            FindAnyObjectByType<Dialogue>()?.DisplayDialogue("<Color=yellow>All Cheese collected, Time to go home!");
             FindAnyObjectByType<CheeseSense>().findHomeNow = true;
             FindAnyObjectByType<Patrol>().patrolAroundTV = true;
-            Debug.Log("All cheese collected!");
 
             escapeTrigger.SetActive(true);
         }

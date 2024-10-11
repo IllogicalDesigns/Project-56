@@ -92,10 +92,10 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 128
   baseHeight:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: 0
   maximumHeight:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: 50
   density:
     m_OverrideState: 0

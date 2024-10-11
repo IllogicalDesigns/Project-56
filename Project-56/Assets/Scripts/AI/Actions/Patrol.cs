@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class Patrol : GAction {
@@ -9,6 +10,7 @@ public class Patrol : GAction {
 
     [SerializeField] AudioSource patrolSoundd;
     public bool patrolAroundTV;
+    Cat cat;
 
     public override IEnumerator Perform() {
         if (patrolAroundTV)
@@ -81,6 +83,11 @@ public class Patrol : GAction {
         int closestIndex = 0;
 
         for (int i = 0; i < points.Length; i++) {
+
+            if (i < points.Length-1 && !cat.IsPointInFront(points[i].position)) {
+                continue;
+            }
+
             float distance = Vector3.Distance(pos, points[i].position);
             if (distance < minDistance) {
                 minDistance = distance;
@@ -100,5 +107,25 @@ public class Patrol : GAction {
     // Start is called before the first frame update
     void Start() {
         AddEffects(Cat.patrolGoal);
+
+        cat = GetComponent<Cat>();
+    }
+
+    private void OnDrawGizmos() {
+        if(!running) 
+            return;
+
+        if (patrolPath == null)
+            return;
+
+        if (patrolPath.patrolPoints.Length <= 1)
+            return;
+
+        // Loop through each point and draw lines between them
+        for (int i = 0; i < patrolPath.patrolPoints.Length; i++) {
+            // Draw a line from the current point to the next, looping back to the start
+            var nextIndex = (i + 1) % patrolPath.patrolPoints.Length;
+            Gizmos.DrawLine(patrolPath.patrolPoints[i].position, patrolPath.patrolPoints[nextIndex].position);
+        }
     }
 }
