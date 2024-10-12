@@ -12,6 +12,10 @@ public class Patrol : GAction {
     public bool patrolAroundTV;
     Cat cat;
 
+    [SerializeField] float abandonPatrolRange = 60;
+
+    Transform player;
+
     public override IEnumerator Perform() {
         if (patrolAroundTV)
             patrolPath = homePatrolPath;
@@ -35,6 +39,9 @@ public class Patrol : GAction {
 
         foreach (var point in queue) {
             yield return gAgent.Goto(point.transform.position);
+
+            if (Vector3.Distance(transform.position, player.position) > abandonPatrolRange)
+                break;
         }
 
         patrolSoundd.Stop();
@@ -109,6 +116,8 @@ public class Patrol : GAction {
         AddEffects(Cat.patrolGoal);
 
         cat = GetComponent<Cat>();
+
+        player = GameManager.player.transform;
     }
 
     private void OnDrawGizmos() {

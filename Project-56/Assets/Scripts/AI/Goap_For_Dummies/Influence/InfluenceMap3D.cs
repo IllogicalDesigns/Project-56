@@ -341,7 +341,8 @@ public class InfluenceMap3D : MonoBehaviour {
             {
                 for (int z = 0; z < zSize; z++)
                 {
-                    if (grid[x, y, z] == STARTING) continue;
+                    if (grid[x, y, z] == BARRIER) continue;
+                    //if (grid[x, y, z] == STARTING) continue;
                     Vector3 worldPostion = GridToWorldPosition(x, y, z);
                     Gizmos.color = ByteToColor(grid[x, y, z]);
                     Gizmos.DrawCube(worldPostion, new Vector3(halfExtent, ZHEIGHT, halfExtent));

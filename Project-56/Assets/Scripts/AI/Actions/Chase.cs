@@ -16,6 +16,8 @@ public class Chase : GAction {
     [SerializeField] private float propagationTime = 0.05f;
     [SerializeField] private float barrierOppositeBehindDotVal = 0.5f;
 
+    [SerializeField] float speed = 15f;
+
     private byte[,,] grid;
     private Vector3 start;
     private int xSize = -1;
@@ -389,13 +391,21 @@ public class Chase : GAction {
     public override IEnumerator Perform() {
         gAgent.RemoveGoal(Cat.attackGoal);
         gAgent.RemoveGoal(Cat.investigateGoal);
+        Debug.Log("Chasing");
+
         gameObject.SendMessage("SetBehaviorState", Cat.CatBehavior.Chase);
 
         yield return new WaitForSeconds(0.5f);
 
-        bestChaseGridPoint = map3D.WorldToGrid(player.position);
+        gAgent.agent.speed = speed;
 
-        yield return StartCoroutine(HeatWaveChasePropagation(player, searcher, propagationSteps, propagationTime));
+        bestChaseGridPoint = map3D.WorldToGrid(player.position);
+        gAgent.agent.destination = bestChaseGridPoint;
+
+        //yield return 
+        StartCoroutine(HeatWaveChasePropagation(player, searcher, propagationSteps, propagationTime));
+
+        yield return new WaitForSeconds(1f);
 
         yield return gAgent.Goto(map3D.GridToWorld(bestChaseGridPoint), stoppingDist);
         //gAgent.agent.SetDestination(map3D.GridToWorld(bestChaseGridPoint));
