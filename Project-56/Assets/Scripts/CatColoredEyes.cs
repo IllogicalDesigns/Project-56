@@ -45,19 +45,19 @@ public class CatColoredEyes : MonoBehaviour
     public void SetBehaviorState(Cat.CatBehavior newState) {
         if (newState == Cat.CatBehavior.Patrol) {
             light.color = Color.white;
-            eyeRenderer.material = patrolMaterial;
+            if(eyeRenderer) eyeRenderer.material = patrolMaterial;
         }
         else if (newState == Cat.CatBehavior.Chase) {
             light.color = Color.magenta;
-            eyeRenderer.material = patrolMaterial;
+            if (eyeRenderer) eyeRenderer.material = patrolMaterial;
         }
         else if (newState == Cat.CatBehavior.Investigate) {
             light.color = Color.yellow;
-            eyeRenderer.material = InvestigateMaterial;
+            if (eyeRenderer) eyeRenderer.material = InvestigateMaterial;
         }
         else if (newState == Cat.CatBehavior.Attack) {
             light.color = Color.red;
-            eyeRenderer.material = attackMaterial;
+            if (eyeRenderer) eyeRenderer.material = attackMaterial;
         }
     }
 }

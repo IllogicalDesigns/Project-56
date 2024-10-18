@@ -6,7 +6,6 @@ public class SettingsMenu : MonoBehaviour
     [SerializeField] Slider volumeSlider;
     [SerializeField] Slider fovSlider;
     [SerializeField] Slider sensSlider;
-    [SerializeField] Button RestartButton;
 
     SettingsManager settingsManager;
 
@@ -30,8 +29,6 @@ public class SettingsMenu : MonoBehaviour
         sensSlider.minValue = settingsManager.minSens;
         sensSlider.maxValue = settingsManager.maxSens;
         sensSlider.value = settingsManager.sensValue;
-
-        RestartButton.onClick.AddListener(RestartGame);
     }
 
     public void OnVolumeChanged() {
@@ -44,9 +41,5 @@ public class SettingsMenu : MonoBehaviour
 
     public void OnSensChanged() {
         settingsManager.OnSensChanged(sensSlider.value);
-    }
-
-    void RestartGame() {
-        FindAnyObjectByType<GameManager>().RestartLevel();
     }
 }

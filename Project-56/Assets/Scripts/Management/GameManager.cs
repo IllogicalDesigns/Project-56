@@ -3,6 +3,7 @@ using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using DG.Tweening;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject escapeTrigger;
     [SerializeField] GameObject pauseMenu;
     [SerializeField] NavMeshAgent cat;
+
+    [SerializeField] TextMeshProUGUI godModeText;
 
     bool canDie = true;
 
@@ -36,7 +39,7 @@ public class GameManager : MonoBehaviour
         Cursor.visible = !isLocked;
     }
 
-    public void SetPausedState() {
+    public void TogglePausedState() {
         isPaused = !isPaused;
 
         pauseMenu.SetActive(isPaused);
@@ -70,7 +73,8 @@ public class GameManager : MonoBehaviour
     }
 
     public void RestartLevel() {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        var load = GetComponent<LoadScene>();
+        load.TransitionToLevel(SceneManager.GetActiveScene().name);
     }
 
     public void CheeseCollected() {
@@ -109,11 +113,12 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if(Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Tab)) {
-            SetPausedState();
+            TogglePausedState();
         }
 
         if (Input.GetKeyDown(KeyCode.O)) {
             canDie = !canDie;
+            if(godModeText != null) godModeText.gameObject.SetActive(!canDie);
         }
 
         if (Input.GetKeyDown(KeyCode.L)) {

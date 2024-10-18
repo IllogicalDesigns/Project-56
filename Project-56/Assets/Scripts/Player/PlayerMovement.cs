@@ -74,8 +74,13 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(crouchKeyName) || Input.GetKeyDown(altCrouchKeyName)) 
             crouched = !crouched;
 
-        moveDirection = transform.forward * Input.GetAxis(verticalAxisName);
-        moveDirection += transform.right * Input.GetAxis(horizontalAxisName);
+        Vector2 input = new Vector2(Input.GetAxis(verticalAxisName), Input.GetAxis(horizontalAxisName));
+
+        if (input.magnitude > 1)
+            input.Normalize();
+
+        moveDirection = transform.forward * input.x;
+        moveDirection += transform.right * input.y;
 
         sprinting = Input.GetKey(sprintKeyName);
         if (sprinting) crouched = false;

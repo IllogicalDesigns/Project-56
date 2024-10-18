@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 1972436902445046056}
   - component: {fileID: 5317507421503212174}
   - component: {fileID: 8218022626699779577}
+  - component: {fileID: 3013370507993614994}
   m_Layer: 0
   m_Name: CheesePickup
   m_TagString: Untagged
@@ -127,15 +128,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pickup: {fileID: 8300000, guid: 36ce8968d1f623a40a322c07cee68043, type: 3}
-  yHeight: 0.5
-  yDuration: 1
-  ease: 4
-  rotateVec: {x: 0, y: 50, z: 0}
-  rotateVec2: {x: 0, y: 0, z: -20}
-  rotDuration: 1
-  rotDuration2: 1
-  ease2: 1
-  ease3: 4
 --- !u!54 &1972436902445046056
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -327,6 +319,27 @@ MonoBehaviour:
   m_SkinMeshRef: {fileID: 0}
   m_OriginalMeshObject: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
   m_Mode: 0
+--- !u!114 &3013370507993614994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3752559082439857183}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97eb44f989a0efb4d866e72a760120d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  yHeight: 1
+  yDuration: 1
+  ease: 4
+  rotateVec: {x: 0, y: 1, z: 0}
+  rotateVec2: {x: 0, y: 1, z: 0}
+  rotDuration: 1
+  rotDuration2: 1
+  ease2: 1
+  ease3: 4
 --- !u!1 &4003655260499864456
 GameObject:
   m_ObjectHideFlags: 0

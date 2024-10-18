@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class AIDirector : MonoBehaviour
 {
-    float timeNearPlayer;
+    [SerializeField] float timeNearPlayer;
     [SerializeField] float tooMuchTimeNearPlayer = 15f;
     [SerializeField] float nearPlayer = 15f;
     Transform player;
@@ -17,6 +17,10 @@ public class AIDirector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //if(!(catAgent.currentAction is Patrol)) {
+        //    return;
+        //}
+
         //if (Vector3.Distance(player.transform.position, transform.position) < nearPlayer) {
         //    timeNearPlayer += Time.deltaTime;
         //}
@@ -30,6 +34,6 @@ public class AIDirector : MonoBehaviour
 
     public void Rested() {
         timeNearPlayer = 0;
-        catAgent.AddGoal(Cat.patrolGoal, null, 5, true);
+        catAgent.AddGoal(Cat.patrolGoal, null, 5, false);
     }
 }

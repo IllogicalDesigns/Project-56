@@ -35,6 +35,12 @@ public class Cat : GAgent
 
     public bool canHearThings = true;
 
+    [Space]
+    public float investigateTime = 10f;
+    public float investigateTimer;
+    public float attackTime = 10f;
+    public float attackTimer;
+
     public enum CatBehavior {
         Patrol,
         Investigate,
@@ -76,6 +82,9 @@ public class Cat : GAgent
     }
 
     private void Update() {
+        if(investigateTimer > 0) { investigateTimer -= Time.deltaTime; }
+        if(attackTimer > 0) {  attackTimer -= Time.deltaTime; }
+
         HandleSeeingThePlayer();
     }
 
@@ -91,11 +100,13 @@ public class Cat : GAgent
         }
 
         if (visualStim.awareness > minThreshold && AddGoal(investigateGoal, player, 5, true)) {
+            investigateTimer = investigateTime;
             topStim = visualStim;
             Replan();
         }
 
         if (visualStim.awareness > attackThresh && AddGoal(attackGoal, player, 3, true)) {
+            attackTimer = attackTime;
             AddGoal(chaseGoal, player, 4, true);
             topStim = visualStim;
             Replan();
@@ -107,6 +118,7 @@ public class Cat : GAgent
     public void SoundStimuli(Stimulus stimulus, bool ignoreHearing = false, float boost = 0f) {
         if (!hearingSensor.CanWeHear(stimulus.gameObject)) return;
         if(AddGoal(investigateGoal, stimulus, 5, true)) {
+            investigateTimer = investigateTime;
             topStim = stimulus;
             Replan();
         }

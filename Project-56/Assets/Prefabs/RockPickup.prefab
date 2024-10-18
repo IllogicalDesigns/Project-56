@@ -66,7 +66,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 21a083d77bda2c64c9413b4adad03abf, type: 2}
     - target: {fileID: 919132149155446097, guid: 039f263fc345f9247a743a522cdc4a38, type: 3}
       propertyPath: m_Name
-      value: ROCK
+      value: RockPickup
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -84,6 +84,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 039f263fc345f9247a743a522cdc4a38, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3367650310124848591}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 039f263fc345f9247a743a522cdc4a38, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -7367206400072788696}
   m_SourcePrefab: {fileID: 100100000, guid: 039f263fc345f9247a743a522cdc4a38, type: 3}
 --- !u!1 &6798982817439361306 stripped
 GameObject:
@@ -165,11 +168,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pickup: {fileID: 8300000, guid: 36ce8968d1f623a40a322c07cee68043, type: 3}
-  yHeight: 0.5
+--- !u!114 &-7367206400072788696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6798982817439361306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97eb44f989a0efb4d866e72a760120d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  yHeight: 1
   yDuration: 1
   ease: 4
-  rotateVec: {x: 0, y: 50, z: 0}
-  rotateVec2: {x: 0, y: 0, z: -20}
+  rotateVec: {x: 0, y: 1, z: 0}
+  rotateVec2: {x: 0, y: 1, z: 0}
   rotDuration: 1
   rotDuration2: 1
   ease2: 1

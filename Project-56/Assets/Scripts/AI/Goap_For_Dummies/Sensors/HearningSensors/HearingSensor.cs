@@ -91,7 +91,7 @@ public class HearingSensor : MonoBehaviour, IHearingSensor {
 
         //Quick check to see that we are in range of the max distance
         if (!InRange(sourcePosition, overrideHearingDist)) {
-            Debug.Log("Sound:" + candidateAudioSource.name + " heard " + "NA" + " units away. overrideHearingDist is" + overrideHearingDist + " SoundHeard:" + false);
+            if(isDebug) Debug.Log("Sound:" + candidateAudioSource.name + " heard " + "NA" + " units away. overrideHearingDist is" + overrideHearingDist + " SoundHeard:" + false);
             return false;
         }
 

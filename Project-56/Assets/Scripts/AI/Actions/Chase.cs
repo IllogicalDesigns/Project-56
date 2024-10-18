@@ -31,6 +31,8 @@ public class Chase : GAction {
 
     private float alpha = 0.25f;
 
+    [SerializeField] float waitBeforeChase = 0.1f;
+
     void Start() {
         map3D = FindAnyObjectByType<InfluenceMap3D>();
         player = GameManager.player.transform;
@@ -46,7 +48,7 @@ public class Chase : GAction {
         //}
     }
 
-    public IEnumerator HeatWaveChasePropagation(Transform target, Transform searcher, int PROPSTEPS = 5, float PROPTIME = 0.05f) {
+    public IEnumerator HeatWaveChasePropagation(Transform target, Vector3 oldPos, Transform searcher, int PROPSTEPS = 5, float PROPTIME = 0.05f) {
         Debug.Log("HeatWaveChasePropagation has been called");
         grid = map3D.GetGrid();
 
@@ -63,7 +65,7 @@ public class Chase : GAction {
         start = map3D.start;
 
         var initTargetPosition = map3D.WorldToGrid(target.position);
-        var initDirection = target.position - searcher.position;
+        var initDirection = target.position - oldPos;  //searcherPosition
 
         Debug.Log("map3D.GetSizeVector() " + size + " start " + start + " initTargetPosition " + initTargetPosition + " initDirection " + initDirection);
 
@@ -395,7 +397,12 @@ public class Chase : GAction {
 
         gameObject.SendMessage("SetBehaviorState", Cat.CatBehavior.Chase);
 
-        yield return new WaitForSeconds(0.5f);
+        Vector3 oldPos = player.position;
+        do {
+            oldPos = player.position;
+            gAgent.agent.SetDestination(player.position);
+            yield return new WaitForSeconds(waitBeforeChase);
+        } while (!GameManager.player.isGrounded);
 
         gAgent.agent.speed = speed;
 
@@ -403,7 +410,7 @@ public class Chase : GAction {
         gAgent.agent.destination = bestChaseGridPoint;
 
         //yield return 
-        StartCoroutine(HeatWaveChasePropagation(player, searcher, propagationSteps, propagationTime));
+        StartCoroutine(HeatWaveChasePropagation(player, oldPos, searcher, propagationSteps, propagationTime));
 
         yield return new WaitForSeconds(1f);
 

@@ -16,6 +16,8 @@ public class Patrol : GAction {
 
     Transform player;
 
+    [SerializeField] bool abandonable;
+
     public override IEnumerator Perform() {
         if (patrolAroundTV)
             patrolPath = homePatrolPath;
@@ -40,8 +42,8 @@ public class Patrol : GAction {
         foreach (var point in queue) {
             yield return gAgent.Goto(point.transform.position);
 
-            if (Vector3.Distance(transform.position, player.position) > abandonPatrolRange)
-                break;
+            //if (abandonable && Vector3.Distance(transform.position, player.position) > abandonPatrolRange)
+            //    break;
         }
 
         patrolSoundd.Stop();
@@ -59,6 +61,9 @@ public class Patrol : GAction {
         var bestPath = allPatrols[0];
 
         foreach (PatrolPath path in allPatrols) {
+            if (patrolPath == path)
+                continue;
+
             // Calculate the distance between this object and the Cheese object
             float distanceToPath = Vector3.Distance(path.transform.position, currentPosition);
 

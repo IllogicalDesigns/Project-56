@@ -69,6 +69,8 @@ public class SettingsManager : MonoBehaviour
 
     void SetSens(float value) {
         value = Mathf.Clamp(value, minSens, maxSens);
-        GameManager.player.rotationSpeed = value;
+
+        if(GameManager.player != null)
+            GameManager.player.rotationSpeed = value;
     }
 }

@@ -1,17 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class IKFootSolver : MonoBehaviour {
-    [SerializeField] LayerMask terrainLayer = default;
+
     [SerializeField] Transform body = default;
-    [SerializeField] IKFootSolver otherFoot = default;
-    [SerializeField] float speed = 1;
-    [SerializeField] float stepDistance = 4;
-    //[SerializeField] float forceStepDistance = 8;
-    [SerializeField] float stepLength = 4;
-    [SerializeField] float stepHeight = 1;
-    [SerializeField] Vector3 footOffset = default;
+    //[SerializeField] IKFootSolver otherFoot = default;
+    //[SerializeField] float speed = 1;
+    //[SerializeField] float stepDistance = 4;
+    ////[SerializeField] float forceStepDistance = 8;
+    //[SerializeField] float stepLength = 4;
+    //[SerializeField] float stepHeight = 1;
+
     //[SerializeField] Transform Target;
     //[SerializeField] Transform normal;
     float footSpacing;
@@ -19,44 +20,66 @@ public class IKFootSolver : MonoBehaviour {
     Vector3 oldNormal, currentNormal, newNormal;
     float lerp;
 
+    [Space]
+    [SerializeField] float maxDistance = 4;
+    [SerializeField] Vector3 rayOffset = Vector3.up;
+    [SerializeField] Vector3 footOffset = default;
+    [SerializeField] LayerMask terrainLayer = default;
+    [SerializeField] Transform bonePose;
+    float bodyFootDif;
+    public bool onGround;
+
+    [SerializeField] float stepDistance = 2f;
+    Vector3 lastPos;
+
+    //[SerializeField] float wait;
+    //[SerializeField] float speedSpeed = 1f;
+
     private void Start() {
         footSpacing = transform.localPosition.x;
         currentPosition = newPosition = oldPosition = transform.position;
         currentNormal = newNormal = oldNormal = transform.up;
         lerp = 1;
+
+        bodyFootDif = body.transform.position.y - transform.position.y;
+
+        //yield return new WaitForSeconds(wait);
+        //DOTween.To(() => footOffset.y, x => footOffset.y = x, stepHeight, speedSpeed).SetLoops(-1, LoopType.Yoyo);
+        //transform.DOLocalMoveY(transform.position.y + stepHeight, speedSpeed).SetLoops(-1, LoopType.Yoyo);
     }
 
     // Update is called once per frame
 
     void Update() {
-        transform.position = currentPosition;
-        transform.up = currentNormal;
+        //if(Vector3.Distance(lastPos, transform.position) > stepDistance) {
+            PlaceFoot();
 
-        //Target.position = currentPosition;
-        //normal.position = currentPosition + Vector3.up * 5f;
+            MoveHip();
+        //}
+    }
 
-        Ray ray = new Ray(body.position + (body.right * footSpacing), Vector3.down);
-
-        if (Physics.Raycast(ray, out RaycastHit info, 10, terrainLayer.value)) {
-            if (Vector3.Distance(newPosition, info.point) > stepDistance && !otherFoot.IsMoving() && lerp >= 1) {  
-                lerp = 0;
-                int direction = body.InverseTransformPoint(info.point).z > body.InverseTransformPoint(newPosition).z ? 1 : -1;
-                newPosition = info.point + (body.forward * stepLength * direction) + footOffset;
-                newNormal = info.normal;
-            }
-        }
-
-        if (lerp < 1) {
-            Vector3 tempPosition = Vector3.Lerp(oldPosition, newPosition, lerp);
-            tempPosition.y += Mathf.Sin(lerp * Mathf.PI) * stepHeight;
-
-            currentPosition = tempPosition;
-            currentNormal = Vector3.Lerp(oldNormal, newNormal, lerp);
-            lerp += Time.deltaTime * speed;
+    private void MoveHip() {
+        if (transform.position.y > body.transform.position.y) {
+            transform.position = new Vector3(body.transform.position.x, body.transform.position.y - bodyFootDif, body.transform.position.z);
+            onGround = false;
         }
         else {
-            oldPosition = newPosition;
-            oldNormal = newNormal;
+            onGround = true;
+        }
+    }
+
+    private void PlaceFoot() {
+        Debug.DrawRay(bonePose.position + rayOffset, -Vector3.up * maxDistance, Color.red);
+        RaycastHit hit;
+        if (Physics.Raycast(bonePose.position + rayOffset, -Vector3.up, out hit, maxDistance, terrainLayer)) {
+            transform.position = footOffset + hit.point;  //Place foot on ground, given some offset
+            transform.rotation = Quaternion.LookRotation(transform.forward, hit.normal);    //Match foot to normal of surface
+            lastPos = transform.position;
+            Debug.DrawLine(bonePose.position + rayOffset, footOffset + hit.point, Color.green);
+            onGround = true;
+        }
+        else {
+            onGround = false;
         }
     }
 
@@ -68,6 +91,8 @@ public class IKFootSolver : MonoBehaviour {
         Gizmos.DrawSphere(currentPosition, 0.25f);
         Gizmos.color = Color.green;
         Gizmos.DrawSphere(currentNormal, 0.25f);
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawSphere(lastPos, 0.25f);
     }
 
 

@@ -23,6 +23,7 @@ public class HelpManager : MonoBehaviour
     [Space]
     [SerializeField] string leanReminderText = "Press Q or E to lean around corners";
     Camera cam;
+    [SerializeField] LayerMask mask = ~8;
     [SerializeField] Vector3 leanDectionOffset = Vector3.right;
     [SerializeField] float leanDetectionRange = 2f;
     [SerializeField] float leanCoolDown = 15f;
@@ -58,9 +59,9 @@ public class HelpManager : MonoBehaviour
             return;
         }
 
-        bool front = Physics.Raycast(cam.transform.position, cam.transform.forward, leanDetectionRange);
-        bool right = Physics.Raycast(cam.transform.position + leanDectionOffset, cam.transform.forward, leanDetectionRange);
-        bool left = Physics.Raycast(cam.transform.position + -leanDectionOffset, cam.transform.forward, leanDetectionRange);
+        bool front = Physics.Raycast(cam.transform.position, cam.transform.forward, leanDetectionRange, mask);
+        bool right = Physics.Raycast(cam.transform.position + leanDectionOffset, cam.transform.forward, leanDetectionRange, mask);
+        bool left = Physics.Raycast(cam.transform.position + -leanDectionOffset, cam.transform.forward, leanDetectionRange, mask);
 
         bool Display = !(front && left && right) && !(!front && !left && !right);
 
