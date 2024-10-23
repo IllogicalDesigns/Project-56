@@ -56,6 +56,8 @@ public class PlayerMovement : MonoBehaviour
     public delegate void OnLand();
     public event OnLand land;
 
+    public bool OnLadder;
+
 
     void Start() {
         // Get reference to the Character Controller
@@ -67,11 +69,46 @@ public class PlayerMovement : MonoBehaviour
     void Update() {
         if (!canMove) { return; }
 
+        if (OnLadder) {
+            Vector2 ladderInput = new Vector2(Input.GetAxis(verticalAxisName), Input.GetAxis(horizontalAxisName));
+
+            if (ladderInput.magnitude > 1)
+                ladderInput.Normalize();
+
+            moveDirection = transform.forward * ladderInput.x;
+            moveDirection += transform.right * ladderInput.y;
+
+            Vector3 cameraForward = Camera.main.transform.forward;
+            Vector3 upDirection = Vector3.up;
+            float dotProduct = Vector3.Dot(cameraForward, upDirection);
+
+
+            if (ladderInput.x > 0) {
+                if (dotProduct > 0.5f) {
+                    // Player is looking up
+                    moveDirection += transform.up * 1f;
+                }
+                else if (dotProduct < -0.5f) {
+                    // Player is looking down
+                    moveDirection += transform.up * -1f;
+                }
+            }
+
+
+        }
+        else {
+            UpdateNormalMove();
+        }
+
+        HandleRotation();
+    }
+
+    private void UpdateNormalMove() {
         coyoteTimer -= Time.deltaTime;
 
         HandleGrounding();
 
-        if (Input.GetKeyDown(crouchKeyName) || Input.GetKeyDown(altCrouchKeyName)) 
+        if (Input.GetKeyDown(crouchKeyName) || Input.GetKeyDown(altCrouchKeyName))
             crouched = !crouched;
 
         Vector2 input = new Vector2(Input.GetAxis(verticalAxisName), Input.GetAxis(horizontalAxisName));
@@ -86,7 +123,7 @@ public class PlayerMovement : MonoBehaviour
         if (sprinting) crouched = false;
         if (crouched) sprinting = false;
 
-        HandleRotation();
+
         HandleJump();
         HandleCrouch();
     }
@@ -165,6 +202,8 @@ public class PlayerMovement : MonoBehaviour
 
         var speed = GetSpeed();
         characterController.Move(moveDirection * speed * Time.deltaTime);
+
+        if (OnLadder) { return; }
 
         HandleGravity();
         PullCharacterToTheGround();
