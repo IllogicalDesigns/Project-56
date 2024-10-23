@@ -67,7 +67,7 @@ public class Chase : GAction {
         var initTargetPosition = map3D.WorldToGrid(target.position);
         var initDirection = target.position - oldPos;  //searcherPosition
 
-        Debug.Log("map3D.GetSizeVector() " + size + " start " + start + " initTargetPosition " + initTargetPosition + " initDirection " + initDirection);
+        Debug.Log("HeatWaveChase map3D.GetSizeVector() " + size + " start " + start + " initTargetPosition " + initTargetPosition + " initDirection " + initDirection);
 
         newBarriers.Clear();
         newHeat.Clear();
